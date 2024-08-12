@@ -1,6 +1,10 @@
-package main.java.com.techlab.ticket_repository.repositories;
+package com.techlab.ticket_repository.repositories;
 
+import com.techlab.ticket_repository.models.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public class UserRepository {
-    
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User,Integer> {
+    Optional<User> findByName(String username);
 }

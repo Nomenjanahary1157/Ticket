@@ -1,7 +1,7 @@
 package main.java.com.techlab.ticket_repository.models;
 
 @Entity
-@Data 
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

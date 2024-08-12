@@ -6,7 +6,7 @@ package main.java.com.techlab.ticket_repository.models;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    String idUser;
+    Integer idUser;
     String usermame;
     String password;
     String roles;

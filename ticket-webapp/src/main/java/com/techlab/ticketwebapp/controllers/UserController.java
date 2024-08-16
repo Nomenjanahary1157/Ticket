@@ -1,6 +1,5 @@
 package com.techlab.ticketwebapp.controllers;
 
-import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketservice.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

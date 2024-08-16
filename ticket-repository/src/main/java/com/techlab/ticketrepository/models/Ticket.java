@@ -1,5 +1,6 @@
 package com.techlab.ticketrepository.models;
 
+import com.techlab.ticketrepository.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,8 @@ public class Ticket {
     @Column(nullable = false)
     private String ticketNumber;
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TicketStatus status;
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;

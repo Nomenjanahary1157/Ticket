@@ -1,7 +1,7 @@
 package com.techlab.ticketwebapp.controllers;
 
 import com.techlab.ticketrepository.models.Ticket;
-import com.techlab.ticketservice.TicketService;
+import com.techlab.ticketservice.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

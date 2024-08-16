@@ -1,4 +1,4 @@
-package com.techlab.ticketservice;
+package com.techlab.ticketservice.services;
 
 import com.techlab.ticketrepository.models.Client;
 import com.techlab.ticketrepository.repositories.ClientRepository;

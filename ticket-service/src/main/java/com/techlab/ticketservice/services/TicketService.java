@@ -1,4 +1,4 @@
-package com.techlab.ticketservice;
+package com.techlab.ticketservice.services;
 
 import com.techlab.ticketrepository.enums.TicketStatus;
 import com.techlab.ticketrepository.models.Ticket;

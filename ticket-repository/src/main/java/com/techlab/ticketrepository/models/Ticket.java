@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Ticket {
+public class Ticket implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -26,9 +27,9 @@ public class Ticket {
     private String description;
     @Column(nullable = false)
     private String ticketNumber;
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private TicketStatus status;
+    @Column(nullable = false)
+    private TicketStatus status = TicketStatus.NOT_ASSIGNED;
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;

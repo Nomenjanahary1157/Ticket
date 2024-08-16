@@ -4,11 +4,13 @@ import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketrepository.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@ComponentScan(basePackages = "com.techlab.ticketrepository.repositories")
 public class UserService {
     @Autowired
     private UserRepository userRepository;

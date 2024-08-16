@@ -4,10 +4,12 @@ import com.techlab.ticketrepository.enums.TicketStatus;
 import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.repositories.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@ComponentScan(basePackages = {"com.techlab.ticketrepository.models","com.techlab.ticketrepository.repositories"})
 public class TicketService {
 
     @Autowired
@@ -22,6 +24,9 @@ public class TicketService {
     }
 
     public Ticket save(Ticket ticket) {
+        if (ticket.getStatus() == null || ticket.getStatus().toString().isEmpty()) {
+            ticket.setStatus(TicketStatus.NOT_ASSIGNED);
+        }
         return ticketRepository.save(ticket);
     }
 

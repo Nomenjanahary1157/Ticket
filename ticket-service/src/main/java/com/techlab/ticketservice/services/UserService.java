@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@ComponentScan(basePackages = {"com.techlab.ticketsecurity.configurations", "com.techlab.ticketsecurity.utils", "com.techlab.ticketsecurity.userImpl"})
+@ComponentScan(basePackages = {"com.techlab.ticketrepository.repositories","com.techlab.ticketsecurity.configurations", "com.techlab.ticketsecurity.utils", "com.techlab.ticketsecurity.userImpl"})
 public class UserService {
     @Autowired
     private UserRepository userRepository;

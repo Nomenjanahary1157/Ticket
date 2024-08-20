@@ -18,42 +18,72 @@ public class TicketController {
 
     @PostMapping("/create")
     public ResponseEntity<?> save(@RequestBody Ticket ticket) {
-        return ResponseEntity.ok(ticketService.save(ticket));
+        try {
+            return ResponseEntity.ok(ticketService.save(ticket));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getById(@PathVariable Integer id) {
-        Ticket ticket = ticketService.findById(id);
-        if (ticket != null) {
-            return ResponseEntity.ok(ticket);
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        try {
+            Ticket ticket = ticketService.findById(id);
+            if (ticket != null) {
+                return ResponseEntity.ok(ticket);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
         }
     }
 
     @GetMapping
-    public List<Ticket> getAllTickets() {
-        return ticketService.findAll();
+    public ResponseEntity<?> getAllTickets() {
+        try {
+            return ResponseEntity.ok(ticketService.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
+        }
     }
 
     @PostMapping
-    public Ticket createTicket(@RequestBody Ticket ticket) {
-        return ticketService.save(ticket);
+    public ResponseEntity<?> createTicket(@RequestBody Ticket ticket) {
+        try {
+            return ResponseEntity.ok(ticketService.save(ticket));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
+        }
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Ticket> updateStatus(@PathVariable Integer id, @RequestParam String status) {
-        Ticket updatedTicket = ticketService.changeStatus(id, status);
-        if (updatedTicket != null) {
-            return ResponseEntity.ok(updatedTicket);
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateStatus(@PathVariable Integer id, @RequestParam String status) {
+        try {
+            Ticket updatedTicket = ticketService.changeStatus(id, status);
+            if (updatedTicket != null) {
+                return ResponseEntity.ok(updatedTicket);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        ticketService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        try {
+            ticketService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 }

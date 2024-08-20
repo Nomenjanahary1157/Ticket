@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/clients")
@@ -18,32 +17,57 @@ public class ClientController {
 
     @PostMapping("/create")
     public ResponseEntity<?> save(@RequestBody Client client) {
-        return ResponseEntity.ok(clientService.save(client));
+        try {
+            return ResponseEntity.ok(clientService.save(client));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getById(@PathVariable Integer id) {
-        Client client = clientService.findById(id);
-        if (client != null) {
-            return ResponseEntity.ok(client);
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getById(@PathVariable Integer id) {
+        try {
+            Client client = clientService.findById(id);
+            if (client != null) {
+                return ResponseEntity.ok(client);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
     @GetMapping
-    public List<Client> getAll() {
-        return clientService.findAll();
+    public ResponseEntity<?> getAll() {
+        try {
+            return ResponseEntity.ok(clientService.findAll());
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @PostMapping
-    public Client create(@RequestBody Client client) {
-        return clientService.save(client);
+    public ResponseEntity<?> create(@RequestBody Client client) {
+        try {
+            return ResponseEntity.ok(clientService.save(client));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
-        clientService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Integer id) {
+        try {
+            clientService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
+        }
     }
 }

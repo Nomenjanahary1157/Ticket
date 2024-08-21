@@ -1,7 +1,7 @@
 package com.techlab.ticketbatch;
 
-import com.techlab.ticketservice.TicketService;
 import com.techlab.ticketrepository.models.Ticket;
+import com.techlab.ticketservice.services.TicketService;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.transforms.Create;

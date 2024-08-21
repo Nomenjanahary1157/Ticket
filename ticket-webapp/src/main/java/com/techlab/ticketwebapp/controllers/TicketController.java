@@ -4,7 +4,6 @@ import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketservice.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,5 +86,14 @@ public class TicketController {
             // TODO: handle exception
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<List<Ticket>> getByStatus(@RequestParam(required = false) TicketStatus status) {
+        if (status != null) {
+            List<Ticket> tickets = ticketService.findByStatus(status);
+            return (!tickets.isEmpty()) ? ResponseEntity.ok(tickets) : ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

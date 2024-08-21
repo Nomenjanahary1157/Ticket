@@ -6,10 +6,11 @@ import com.techlab.ticketrepository.repositories.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
-@ComponentScan(basePackages = {"com.techlab.ticketrepository.models","com.techlab.ticketrepository.repositories"})
+@ComponentScan(basePackages = {"com.techlab.ticketrepository.models", "com.techlab.ticketrepository.repositories"})
 public class TicketService {
 
     @Autowired
@@ -42,4 +43,8 @@ public class TicketService {
         }
         return null;
     }
+    public List<Ticket> findByStatus(TicketStatus status) {
+        return ticketRepository.findByStatus(status);
+    }
+
 }

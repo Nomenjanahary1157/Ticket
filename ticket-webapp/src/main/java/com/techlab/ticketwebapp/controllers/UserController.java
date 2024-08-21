@@ -1,26 +1,25 @@
 package com.techlab.ticketwebapp.controllers;
 
+import com.techlab.ticketrepository.dtos.AuthResponseDTO;
+import com.techlab.ticketrepository.enums.Role;
 import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketsecurity.utils.JwtUtils;
 import com.techlab.ticketservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -38,6 +37,7 @@ public class UserController {
     public ResponseEntity<?> save(@RequestBody User user) {
         try {
             user.setPassword(encoder.encode(user.getPassword()));
+            user.setRole(Role.CP);
             return ResponseEntity.ok(userService.save(user));
         } catch (Exception e) {
             // TODO: handle exception
@@ -48,30 +48,28 @@ public class UserController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody User user) {
         try {
-            Map<String, Object> response = new HashMap<>();
-            System.out.println("ETAPE 1 : " + user.getUsername());
-            var connectedUser = userService.findByName(user.getName())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            System.out.println("ETAPE 2");
-            Authentication authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(user.getName(), user.getPassword()));
-            System.out.println("ETAPE 3");
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            System.out.println("PASSWORD 2 : " + userDetails.getPassword());
-            System.out.println("PASSWORD 1 : " + connectedUser.getPassword());
-            if (encoder.matches(user.getPassword(), userDetails.getPassword())) {
-                response.put("content", jwtUtils.generateToken(userDetails));
-                response.put("user", userDetails);
-                return ResponseEntity.ok(response);
-            } else
-                return ResponseEntity.badRequest().body("Incorrect password");
+            //verify if user exists
+            var connectedUser = userService.findByName(user.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            //check if user has correct password
+            if (!encoder.matches(user.getPassword(), connectedUser.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(AuthResponseDTO.builder().user(null).content("Incorrect password").build());
+            }
+
+            //authenticate user
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+
+            return ResponseEntity.ok().body(AuthResponseDTO.builder().user(connectedUser).content(jwtUtils.generateToken((UserDetails) authentication.getPrincipal())).build());
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(AuthResponseDTO.builder().user(null).content("Bad credentials").build());
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
             // TODO: handle exception
+            return ResponseEntity.internalServerError().body("An error has occurred : " + e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         try {
             User user = userService.findById(id);
@@ -87,6 +85,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> getAll() {
         try {
             return ResponseEntity.ok(userService.findAll());
@@ -96,14 +95,26 @@ public class UserController {
         }
     }
 
+    @PutMapping("/update")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> update(@RequestBody User user) {
+        try {
+            return ResponseEntity.ok(userService.save(user));
+        } catch (Exception e) {
+            // TODO: handle exception
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         try {
             userService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
             // TODO: handle exception
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }

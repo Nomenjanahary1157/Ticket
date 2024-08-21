@@ -26,7 +26,7 @@ public class User implements UserDetails, Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false)
-    private String name;
+    private String username;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
@@ -43,7 +43,7 @@ public class User implements UserDetails, Serializable {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override

@@ -51,6 +51,7 @@ public class JwtUtils {
         return Jwts
                 .builder()
                 .claims(extraClaims)
+                .claim("role", userDetails.getAuthorities())
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))

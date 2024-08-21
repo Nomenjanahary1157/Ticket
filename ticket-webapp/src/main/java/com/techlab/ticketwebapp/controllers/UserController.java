@@ -55,6 +55,7 @@ public class UserController {
             response.put("content", jwtUtils.generateToken(userDetails));
             response.put("user", userDetails);
             return ResponseEntity.ok(response);
+
         } else return ResponseEntity.badRequest().body("Incorrect password");
     }
 

@@ -29,6 +29,7 @@ public class ClientController {
             client.setRole(Role.CLI);
             return ResponseEntity.ok(clientService.save(client));
         } catch (DataIntegrityViolationException e) {
+
             return ResponseEntity.badRequest().body(ErrorResponseDTO.builder().status(400).content("Username or trigram already exists").build());
         } catch (Exception e) {
             // TODO: handle exception

@@ -1,11 +1,13 @@
 package com.techlab.ticketwebapp.controllers;
 
 import com.techlab.ticketrepository.dtos.AuthResponseDTO;
+import com.techlab.ticketrepository.dtos.ErrorResponseDTO;
 import com.techlab.ticketrepository.enums.Role;
 import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketsecurity.utils.JwtUtils;
 import com.techlab.ticketservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,11 +39,16 @@ public class UserController {
     public ResponseEntity<?> save(@RequestBody User user) {
         try {
             user.setPassword(encoder.encode(user.getPassword()));
-            user.setRole(Role.CP);
             return ResponseEntity.ok(userService.save(user));
+        } catch (DataIntegrityViolationException e){
+            return ResponseEntity.badRequest().body(ErrorResponseDTO
+                    .builder()
+                            .status(400)
+                            .content("Username already exists")
+                    .build());
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseEntity.badRequest().body("Error creating user: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Error creating user: " + e.getMessage());
         }
     }
 

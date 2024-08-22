@@ -18,14 +18,14 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(nullable = false)
+    @Column(nullable = false , unique = true)
     private String username;
     @Column(nullable = false)
     private String password;

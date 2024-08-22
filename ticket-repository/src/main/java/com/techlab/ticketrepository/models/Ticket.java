@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Set;
 
 @Entity
@@ -30,6 +32,8 @@ public class Ticket implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TicketStatus status = TicketStatus.NOT_ASSIGNED;
+    @CreationTimestamp
+    private Timestamp createdAt;
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;

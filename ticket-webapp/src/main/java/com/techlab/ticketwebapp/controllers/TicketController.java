@@ -4,6 +4,7 @@ import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketservice.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,6 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> save(@RequestBody Ticket ticket) {
         try {
             return ResponseEntity.ok(ticketService.save(ticket));

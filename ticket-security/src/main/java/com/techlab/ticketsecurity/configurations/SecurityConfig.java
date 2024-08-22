@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/users/authenticate", "/api/users/create").permitAll()
+                                .requestMatchers("/api/users/authenticate", "/api/clients/create").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults());
         return http.build();

@@ -1,9 +1,13 @@
 package com.techlab.ticketwebapp.controllers;
 
+import com.techlab.ticketrepository.dtos.ErrorResponseDTO;
+import com.techlab.ticketrepository.enums.Role;
 import com.techlab.ticketrepository.models.Client;
 import com.techlab.ticketservice.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +19,20 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+    @Autowired
+    private BCryptPasswordEncoder encoder;
+
     @PostMapping("/create")
     public ResponseEntity<?> save(@RequestBody Client client) {
         try {
+            client.setPassword(encoder.encode(client.getPassword()));
+            client.setRole(Role.CLI);
             return ResponseEntity.ok(clientService.save(client));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body(ErrorResponseDTO.builder().status(400).content("Username or trigram already exists").build());
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body("Error creating user: " + e.getMessage());
         }
     }
 

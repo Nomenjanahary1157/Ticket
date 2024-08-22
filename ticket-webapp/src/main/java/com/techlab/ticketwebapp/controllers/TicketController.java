@@ -1,9 +1,11 @@
 package com.techlab.ticketwebapp.controllers;
 
+import com.techlab.ticketrepository.enums.TicketStatus;
 import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketservice.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 

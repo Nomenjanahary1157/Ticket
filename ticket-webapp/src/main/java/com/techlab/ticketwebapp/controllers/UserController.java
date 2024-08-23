@@ -81,7 +81,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('CP')")
     public ResponseEntity<?> getById(@PathVariable Integer id) {
         try {
             User user = userService.findById(id);
@@ -108,7 +108,7 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('CP')")
     public ResponseEntity<?> update(@RequestBody User user) {
         try {
             return ResponseEntity.ok(userService.save(user));
@@ -119,7 +119,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('CP')")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         try {
             userService.delete(id);

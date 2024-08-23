@@ -44,7 +44,7 @@ public class Ticket implements Serializable {
     @PostUpdate
     public void updateTicketNumber() {
         if (client != null && id != null) {
-            this.ticketNumber = client.getTrigram() + "-" + this.id.toString();
+            this.ticketNumber = client.getTrigram() + "-" + this.id;
         }
     }
 }

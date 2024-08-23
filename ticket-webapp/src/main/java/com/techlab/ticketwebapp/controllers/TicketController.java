@@ -9,6 +9,7 @@ import com.techlab.ticketservice.services.TicketService;
 import com.techlab.ticketservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,11 +27,13 @@ public class TicketController {
     private UserService userService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('CLI')")
     public ResponseEntity<?> save(@RequestBody Ticket ticket) {
         try {
             return ResponseEntity.ok(ticketService.save(ticket));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
         }
     }
 
@@ -45,6 +48,7 @@ public class TicketController {
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
         }
     }
 
@@ -54,6 +58,7 @@ public class TicketController {
             return ResponseEntity.ok(ticketService.findAll());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
         }
     }
 
@@ -70,10 +75,12 @@ public class TicketController {
             return ResponseEntity.ok(ticketService.save(ticket));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
         }
     }
 
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('CP','BA','DEV')")
     public ResponseEntity<?> updateStatus(@PathVariable Integer id, @RequestParam String status) {
         List<String> mail = UserService.findAdmin();
 
@@ -88,15 +95,18 @@ public class TicketController {
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+            // TODO: handle exception
         }
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('CLI')")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         try {
             ticketService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            // TODO: handle exception
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }

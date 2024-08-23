@@ -24,6 +24,7 @@ public class AddDefaultUser implements CommandLineRunner {
             user.setUsername("admin");
             user.setPassword(encoder.encode("admin"));
             user.setRole(Role.CP);
+            user.setMail("raly.enterprise.mada@gmail.com");
             user.setTickets(new HashSet<>());
             userRepository.save(user);
         } catch (DataIntegrityViolationException e) {

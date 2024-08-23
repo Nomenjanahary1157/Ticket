@@ -19,6 +19,7 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('CLI')")
     public ResponseEntity<?> save(@RequestBody Ticket ticket) {
         try {
             return ResponseEntity.ok(ticketService.save(ticket));
@@ -53,17 +54,8 @@ public class TicketController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> createTicket(@RequestBody Ticket ticket) {
-        try {
-            return ResponseEntity.ok(ticketService.save(ticket));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-            // TODO: handle exception
-        }
-    }
-
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('CP','BA','DEV')")
     public ResponseEntity<?> updateStatus(@PathVariable Integer id, @RequestParam String status) {
         try {
             Ticket updatedTicket = ticketService.changeStatus(id, status);
@@ -79,6 +71,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('CLI')")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
         try {
             ticketService.delete(id);

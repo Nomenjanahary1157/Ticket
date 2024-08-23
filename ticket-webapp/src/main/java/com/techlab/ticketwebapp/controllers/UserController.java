@@ -41,6 +41,7 @@ public class UserController {
     private JwtUtils jwtUtils;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('CP')")
     public ResponseEntity<?> save(@RequestBody User user) {
         try {
             user.setPassword(encoder.encode(user.getPassword()));
@@ -97,7 +98,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('CP')")
     public ResponseEntity<?> getAll() {
         try {
             return ResponseEntity.ok(userService.findAll());

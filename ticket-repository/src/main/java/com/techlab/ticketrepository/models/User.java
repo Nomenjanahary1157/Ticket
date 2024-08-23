@@ -30,6 +30,8 @@ public class User implements UserDetails, Serializable {
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
+    private String mail;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
     @ManyToMany

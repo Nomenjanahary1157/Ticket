@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -23,27 +24,22 @@ public class Ticket implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false)
     private String description;
-
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
-
     @Column(nullable = false)
     private String ticketNumber;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TicketStatus status = TicketStatus.NOT_ASSIGNED;
-
     @CreationTimestamp
     private Timestamp createdAt;
-
+    @UpdateTimestamp
+    private Timestamp updatedAt;
     @ManyToMany(mappedBy = "tickets")
     private Set<User> users = new HashSet<>();
 

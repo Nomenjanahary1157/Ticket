@@ -1,5 +1,8 @@
 package com.techlab.ticketrepository.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.techlab.ticketrepository.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,6 +44,7 @@ public class Ticket implements Serializable {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
+    @JsonIgnore
     @ManyToMany(mappedBy = "tickets")
     private Set<User> users = new HashSet<>();
 

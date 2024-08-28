@@ -3,6 +3,7 @@ package com.techlab.ticketwebapp.controllers;
 import com.techlab.ticketrepository.enums.TicketStatus;
 import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.models.User;
+import com.techlab.ticketrepository.repositories.TicketRepository;
 import com.techlab.ticketservice.services.TicketService;
 import com.techlab.ticketservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/api/tickets")
@@ -22,6 +24,9 @@ public class TicketController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TicketRepository ticketRepository;
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('CLI')")
@@ -106,7 +111,7 @@ public class TicketController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping("/")
+    @PutMapping("/affect")
     public ResponseEntity<?> addUserToTicket(@RequestParam Integer ticketId, @RequestParam Integer userId) {
         try {
             Ticket ticket = ticketService.findById(ticketId);
@@ -114,13 +119,19 @@ public class TicketController {
             if (ticket == null || user == null) {
                 return ResponseEntity.notFound().build();
             }
-            ticketService.addUserToTicket(ticket, user);
-            ticket.setStatus(TicketStatus.valueOf("TO_DO"));
-            ticketService.save(ticket);
-            return ResponseEntity.ok(ticket);
+            return ResponseEntity.ok(userService.assignTicketToUser(userId,ticketId));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
+    @GetMapping("/{userId}/tickets")
+    public ResponseEntity<List<Ticket>> getUserTickets(@PathVariable Integer userId) {
+        try {
+            List<Ticket> tickets = userService.getTicketsForUserAsList(userId);
+            return ResponseEntity.ok(tickets);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

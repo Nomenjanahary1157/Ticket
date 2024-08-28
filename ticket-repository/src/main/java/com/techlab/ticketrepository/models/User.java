@@ -1,5 +1,7 @@
 package com.techlab.ticketrepository.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.techlab.ticketrepository.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,10 +13,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.*;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -35,7 +35,6 @@ public class User implements UserDetails, Serializable {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
-
     @ManyToMany
     @JoinTable(
             name = "user_tickets",

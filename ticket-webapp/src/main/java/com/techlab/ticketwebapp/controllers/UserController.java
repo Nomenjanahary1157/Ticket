@@ -97,7 +97,6 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<?> getAll() {
         try {
             return ResponseEntity.ok(userService.findAll());

@@ -2,10 +2,11 @@ package com.techlab.ticketwebapp.controllers;
 
 import com.techlab.ticketrepository.enums.TicketStatus;
 import com.techlab.ticketrepository.models.Ticket;
+import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketservice.services.TicketService;
+import com.techlab.ticketservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,13 +19,15 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/create")
     public ResponseEntity<?> save(@RequestBody Ticket ticket) {
         try {
             return ResponseEntity.ok(ticketService.save(ticket));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
-            // TODO: handle exception
         }
     }
 
@@ -39,7 +42,6 @@ public class TicketController {
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
-            // TODO: handle exception
         }
     }
 
@@ -49,7 +51,6 @@ public class TicketController {
             return ResponseEntity.ok(ticketService.findAll());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
-            // TODO: handle exception
         }
     }
 
@@ -59,7 +60,6 @@ public class TicketController {
             return ResponseEntity.ok(ticketService.save(ticket));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
-            // TODO: handle exception
         }
     }
 
@@ -74,7 +74,6 @@ public class TicketController {
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
-            // TODO: handle exception
         }
     }
 
@@ -84,7 +83,6 @@ public class TicketController {
             ticketService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
-            // TODO: handle exception
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
@@ -96,5 +94,22 @@ public class TicketController {
             return (!tickets.isEmpty()) ? ResponseEntity.ok(tickets) : ResponseEntity.notFound().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<?> addUserToTicket(@RequestParam Integer ticketId, @RequestParam Integer userId) {
+        try {
+            Ticket ticket = ticketService.findById(ticketId);
+            User user = userService.findById(userId);
+
+            if (ticket == null || user == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            ticketService.addUserToTicket(ticket, user);
+            return ResponseEntity.ok(ticket);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 }

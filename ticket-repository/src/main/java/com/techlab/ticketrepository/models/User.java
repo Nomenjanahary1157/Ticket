@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,16 +26,24 @@ public class User implements UserDetails, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(nullable = false , unique = true)
+
+    @Column(nullable = false, unique = true)
     private String username;
+
     @Column(nullable = false)
     private String password;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
     @ManyToMany
-    @JoinTable(name = "user_ticket", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ticket_id"))
-    private Set<Ticket> tickets;
+    @JoinTable(
+            name = "user_tickets",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticket_id")
+    )
+    private Set<Ticket> tickets = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -49,5 +58,27 @@ public class User implements UserDetails, Serializable {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    // Implémentations des autres méthodes de UserDetails si nécessaires
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

@@ -1,30 +1,17 @@
 package com.techlab.ticketbatch;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringBootApplication(scanBasePackages = {"com.techlab.*"})
-@EnableJpaRepositories(basePackages = "com.techlab.ticketrepository.repositories")
-@EntityScan(basePackages = "com.techlab.ticketrepository.models")
-public class TicketBatchApplication implements CommandLineRunner {
+@EnableScheduling
+public class TicketBatchApplication {
 
-    private final BeamCsvExportService beamCsvExportService;
-
-    public TicketBatchApplication(BeamCsvExportService beamCsvExportService) {
-        this.beamCsvExportService = beamCsvExportService;
-    }
-
+    @Autowired
     public static void main(String[] args) {
         SpringApplication.run(TicketBatchApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) {
-        beamCsvExportService.exportTicketsToCsv();
-    }
 }

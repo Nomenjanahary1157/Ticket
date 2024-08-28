@@ -2,8 +2,10 @@ package com.techlab.ticketbatch;
 
 import org.apache.beam.sdk.transforms.DoFn;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @ComponentScan(basePackages = "com.techlab.ticketservice")
+@EnableScheduling
 public class ConvertToCsvFn extends DoFn<TicketDTO, String> {
 
     @ProcessElement

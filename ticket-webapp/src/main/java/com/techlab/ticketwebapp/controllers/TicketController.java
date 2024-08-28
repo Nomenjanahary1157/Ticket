@@ -101,15 +101,16 @@ public class TicketController {
         try {
             Ticket ticket = ticketService.findById(ticketId);
             User user = userService.findById(userId);
-
             if (ticket == null || user == null) {
                 return ResponseEntity.notFound().build();
             }
-
             ticketService.addUserToTicket(ticket, user);
+            ticket.setStatus(TicketStatus.valueOf("TO_DO"));
+            ticketService.save(ticket);
             return ResponseEntity.ok(ticket);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
 }

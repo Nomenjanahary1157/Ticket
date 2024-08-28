@@ -64,16 +64,6 @@ public class TicketController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<?> createTicket(@RequestBody Ticket ticket) {
-        try {
-            return ResponseEntity.ok(ticketService.save(ticket));
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-            // TODO: handle exception
-        }
-    }
-
     @PutMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('CP','BA','DEV')")
     public ResponseEntity<?> updateStatus(@PathVariable Integer id, @RequestParam String status) {

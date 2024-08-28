@@ -41,7 +41,7 @@ public class User implements UserDetails, Serializable {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "ticket_id")
     )
-    private Set<Ticket> tickets = new HashSet<>();
+    private Set<Ticket> tickets = new HashSet<> ();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

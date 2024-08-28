@@ -128,4 +128,14 @@ public class UserController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
+    @GetMapping("/devUser")
+    @PreAuthorize("hasAnyRole('CP')")
+    public  ResponseEntity<?> getDevUser() {
+        try {
+            return  ResponseEntity.ok(userService.findDev());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }

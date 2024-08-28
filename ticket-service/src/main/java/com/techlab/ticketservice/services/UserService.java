@@ -1,5 +1,6 @@
 package com.techlab.ticketservice.services;
 
+import com.techlab.ticketrepository.enums.Role;
 import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketrepository.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<User> findDev() {
+        return userRepository.findByRole(Role.DEV);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
+
 
     public void delete(Integer id) {
         userRepository.deleteById(id);

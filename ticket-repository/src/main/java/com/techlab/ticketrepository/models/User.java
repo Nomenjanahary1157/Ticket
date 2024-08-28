@@ -26,13 +26,10 @@ public class User implements UserDetails, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false , unique = true)
     private String username;
-
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = false)
     private String mail;
     @Column(nullable = false)
@@ -60,27 +57,5 @@ public class User implements UserDetails, Serializable {
     @Override
     public String getPassword() {
         return password;
-    }
-
-    // Implémentations des autres méthodes de UserDetails si nécessaires
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

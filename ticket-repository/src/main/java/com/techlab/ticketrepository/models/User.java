@@ -1,11 +1,8 @@
 package com.techlab.ticketrepository.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.techlab.ticketrepository.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,8 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.*;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -26,7 +25,7 @@ public class User implements UserDetails, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(nullable = false , unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
     @Column(nullable = false)
     private String password;
@@ -36,12 +35,8 @@ public class User implements UserDetails, Serializable {
     @Enumerated(EnumType.STRING)
     private Role role;
     @ManyToMany
-    @JoinTable(
-            name = "user_tickets",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "ticket_id")
-    )
-    private Set<Ticket> tickets = new HashSet<> ();
+    @JoinTable(name = "user_tickets", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "ticket_id"))
+    private Set<Ticket> tickets = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,8 +3,6 @@ package com.techlab.ticketwebapp.controllers;
 import com.techlab.ticketrepository.enums.TicketStatus;
 import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.models.User;
-import com.techlab.ticketrepository.repositories.UserRepository;
-import com.techlab.ticketservice.services.EmailNotifier;
 import com.techlab.ticketservice.services.TicketService;
 import com.techlab.ticketservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/tickets")
@@ -25,6 +22,9 @@ public class TicketController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TicketRepository ticketRepository;
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('CLI')")
@@ -64,14 +64,7 @@ public class TicketController {
 
     @PostMapping
     public ResponseEntity<?> createTicket(@RequestBody Ticket ticket) {
-        List<String> mail = UserService.findAdmin().stream().map(
-                (Admin)->{
-                    return Admin.getMail();
-                }
-        ).collect(Collectors.toList());
         try {
-            EmailNotifier notifier = new EmailNotifier(ticket,mail);
-            notifier.notifyTicketCreation();
             return ResponseEntity.ok(ticketService.save(ticket));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
@@ -82,12 +75,8 @@ public class TicketController {
     @PutMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('CP','BA','DEV')")
     public ResponseEntity<?> updateStatus(@PathVariable Integer id, @RequestParam String status) {
-        List<String> mail = UserService.findAdmin();
-
         try {
             Ticket updatedTicket = ticketService.changeStatus(id, status);
-            EmailNotifier notifier = new EmailNotifier(updatedTicket,mail);
-            notifier.notifyTicketUpdate();
             if (updatedTicket != null) {
                 return ResponseEntity.ok(updatedTicket);
             } else {

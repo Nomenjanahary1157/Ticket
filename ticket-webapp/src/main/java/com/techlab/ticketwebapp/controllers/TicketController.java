@@ -3,6 +3,7 @@ package com.techlab.ticketwebapp.controllers;
 import com.techlab.ticketrepository.enums.TicketStatus;
 import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.models.User;
+import com.techlab.ticketservice.services.EmailNotifier;
 import com.techlab.ticketservice.services.TicketService;
 import com.techlab.ticketservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,8 @@ public class TicketController {
     @PostMapping
     public ResponseEntity<?> createTicket(@RequestBody Ticket ticket) {
         try {
+            EmailNotifier notifier = new EmailNotifier(ticket);
+            notifier.notifyTicketCreation();
             return ResponseEntity.ok(ticketService.save(ticket));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
@@ -65,8 +68,11 @@ public class TicketController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<?> updateStatus(@PathVariable Integer id, @RequestParam String status) {
+
         try {
             Ticket updatedTicket = ticketService.changeStatus(id, status);
+            EmailNotifier notifier = new EmailNotifier(updatedTicket);
+            notifier.notifyTicketUpdate();
             if (updatedTicket != null) {
                 return ResponseEntity.ok(updatedTicket);
             } else {

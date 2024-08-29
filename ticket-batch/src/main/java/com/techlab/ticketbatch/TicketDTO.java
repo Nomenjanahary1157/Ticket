@@ -75,13 +75,6 @@ public class TicketDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "TicketDTO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", ticketNumber='" + ticketNumber + '\'' +
-                ", status='" + status + '\'' +
-                ", clientId='" + clientId + '\'' +
-                '}';
+        return STR."TicketDTO{id=\{id}, name='\{name}\{'\''}, description='\{description}\{'\''}, ticketNumber='\{ticketNumber}\{'\''}, status='\{status}\{'\''}, clientId='\{clientId}\{'\''}\{'}'}";
     }
 }

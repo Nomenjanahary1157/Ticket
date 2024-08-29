@@ -41,7 +41,6 @@ public class Ticket implements Serializable {
     private Timestamp createdAt;
     @UpdateTimestamp
     private Timestamp updatedAt;
-    @JsonIgnore
     @ManyToMany(mappedBy = "tickets")
     private Set<User> users = new HashSet<>();
 

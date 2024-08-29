@@ -31,6 +31,9 @@ public class UserService {
         var cpList = userRepository.findByRole(Role.CP);
         var baList = userRepository.findByRole(Role.BA);
         cpList.addAll(baList);
+        for (User user : cpList) {
+            System.out.println("MAIL : " + user.getMail());
+        }
         // Extract emails using streams and return the list of emails
         return cpList.stream().map(User::getMail).collect(Collectors.toList());
     }

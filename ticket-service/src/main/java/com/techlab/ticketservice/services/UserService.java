@@ -45,18 +45,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public List<Ticket> getTicketsForUserAsList(Integer userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            System.out.println("THE USER : " + userOptional.orElseThrow().getUsername());
-            User user = userOptional.get();
-            System.out.println("THE TICKETS : " + user.getTickets());
-            return new ArrayList<>(user.getTickets());
-        } else {
-            throw new RuntimeException("User not found.");
-        }
-    }
-
     public void delete(Integer id) {
         userRepository.deleteById(id);
     }

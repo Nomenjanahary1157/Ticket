@@ -6,8 +6,10 @@ import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketrepository.repositories.TicketRepository;
 import com.techlab.ticketservice.services.TicketService;
 import com.techlab.ticketservice.services.UserService;
+import com.techlab.ticketwebapp.utils.TicketRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,9 @@ public class TicketController {
 
     @Autowired
     private TicketRepository ticketRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('CLI')")
@@ -118,7 +123,18 @@ public class TicketController {
     @GetMapping("/{userId}/tickets")
     public ResponseEntity<List<Ticket>> getUserTickets(@PathVariable Integer userId) {
         try {
-            List<Ticket> tickets = userService.getTicketsForUserAsList(userId);
+            String sql = """
+                    SELECT t.*
+                    FROM tickets t
+                    INNER JOIN user_tickets ut ON t.id = ut.ticket_id
+                    INNER JOIN users u ON u.id = ut.user_id
+                    WHERE u.id = ?
+                    AND t.status IN ('DONE', 'TO_DO', 'IN_PROGRESS');
+                    """;
+
+            // Execute the query and map the results to a list of Ticket objects
+            List<Ticket> tickets = jdbcTemplate.query(sql, new Object[]{userId}, new TicketRowMapper());
+
             return ResponseEntity.ok(tickets);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

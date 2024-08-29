@@ -6,15 +6,13 @@ import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketrepository.repositories.TicketRepository;
 import com.techlab.ticketrepository.repositories.UserRepository;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -27,6 +25,34 @@ public class UserService {
 
     public User findById(Integer id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public List<String> findAdminMail() {
+        var cpList = userRepository.findByRole(Role.CP);
+        var baList = userRepository.findByRole(Role.BA);
+        cpList.addAll(baList);
+        // Extract emails using streams and return the list of emails
+        return cpList.stream().map(User::getMail).collect(Collectors.toList());
+    }
+
+    public void notifyAdminOnTicketCreate (Ticket ticket) {
+        // Fetch the list of admin emails
+        List<String> adminEmails = findAdminMail();
+        // Create an EmailNotifier instance
+        EmailNotifier notifier = new EmailNotifier(ticket, adminEmails);
+        // Notify admins about the new ticket creation
+        notifier.notifyTicketCreation();
+    }
+
+    public void notifyAdminOnTicketUpdate(Ticket ticket) {
+        // Fetch the list of admin emails
+        List<String> adminEmails = findAdminMail();
+
+        // Create an EmailNotifier instance
+        EmailNotifier notifier = new EmailNotifier(ticket, adminEmails);
+
+        // Notify admins about the ticket update
+        notifier.notifyTicketUpdate();
     }
 
     public Optional<User> findByName(String username) {

@@ -37,7 +37,9 @@ public class TicketController {
     @PreAuthorize("hasAnyRole('CLI')")
     public ResponseEntity<?> save(@RequestBody Ticket ticket) {
         try {
-            return ResponseEntity.ok(ticketService.save(ticket));
+            var savedticket = ticketService.save(ticket);
+            userService.notifyAdminOnTicketCreate(savedticket);
+            return ResponseEntity.ok(savedticket);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
             // TODO: handle exception
@@ -75,6 +77,7 @@ public class TicketController {
         try {
             Ticket updatedTicket = ticketService.changeStatus(id, status);
             if (updatedTicket != null) {
+                userService.notifyAdminOnTicketUpdate(updatedTicket);
                 return ResponseEntity.ok(updatedTicket);
             } else {
                 return ResponseEntity.notFound().build();

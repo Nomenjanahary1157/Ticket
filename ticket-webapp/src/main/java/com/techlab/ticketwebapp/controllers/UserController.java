@@ -3,6 +3,7 @@ package com.techlab.ticketwebapp.controllers;
 import com.techlab.ticketrepository.dtos.AuthResponseDTO;
 import com.techlab.ticketrepository.dtos.ErrorResponseDTO;
 import com.techlab.ticketrepository.enums.Role;
+import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketsecurity.utils.JwtUtils;
 import com.techlab.ticketservice.services.UserService;
@@ -138,4 +139,5 @@ public class UserController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+
 }

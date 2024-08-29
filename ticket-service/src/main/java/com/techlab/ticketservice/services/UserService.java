@@ -31,6 +31,15 @@ public class UserService {
         return userRepository.findByRole(Role.DEV);
     }
 
+    public  List<String> findAdmin() {
+        User cp = (User) userRepository.findByRole(Role.CP);
+        User ba = (User) userRepository.findByRole(Role.BA);
+        String cpMail = cp.getMail();
+        String baMail = ba.getMail();
+        String[] user = {cpMail, baMail};
+        return List.of(user);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }

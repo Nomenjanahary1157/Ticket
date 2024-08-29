@@ -6,7 +6,10 @@ import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EmailNotifier {
 
@@ -14,11 +17,13 @@ public class EmailNotifier {
     private final String password;
     private final Properties properties;
     private final Ticket ticket;
+    private List<String> mailsReceptor;
 
-    public EmailNotifier(Ticket ticket) {
+    public EmailNotifier(Ticket ticket, List<String> mailsReceptor) {
         this.username = "raly.enterprise.mada@gmail.com";
         this.password = "fqii iacw ovao kyga";
         this.ticket = ticket;
+        this.mailsReceptor = mailsReceptor;
 
         // Setup mail server properties
         properties = new Properties();
@@ -28,10 +33,10 @@ public class EmailNotifier {
         properties.put("mail.smtp.starttls.enable", "true");
     }
 
-    public void sendEmail(String to, String subject, String body) throws AddressException {
+    public void sendEmail(String email, String subject, String body) throws AddressException {
         // Validate email address
-        if (to == null || !to.contains("@")) {
-            throw new AddressException("Invalid email address: " + to);
+        if (email == null || !email.contains("@")) {
+            throw new AddressException("Invalid email address: " + email);
         }
 
         // Create a mail session with authentication
@@ -49,7 +54,7 @@ public class EmailNotifier {
             message.setFrom(new InternetAddress(username));
 
             // Set the recipient's email address
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
             // Set the email subject
             message.setSubject(subject);
@@ -59,7 +64,7 @@ public class EmailNotifier {
 
             // Send the email
             Transport.send(message);
-            System.out.println("Email sent successfully.");
+            System.out.println("Email sent successfully to " + email);
 
         } catch (MessagingException mex) {
             mex.printStackTrace();
@@ -71,22 +76,42 @@ public class EmailNotifier {
         String subject = "New Ticket Created: ID " + this.ticket.getId();
         String body = "A new ticket with ID " + this.ticket.getId() + " with title as " + this.ticket.getName() + " is Created.";
 
-        try {
-            sendEmail("nomenarkt16@gmail.com", subject, body);
-        } catch (AddressException e) {
-            e.printStackTrace();
+        // Create a thread pool to send emails in parallel
+        ExecutorService executor = Executors.newFixedThreadPool(mailsReceptor.size());
+
+        for (String email : mailsReceptor) {
+            executor.submit(() -> {
+                try {
+                    sendEmail(email, subject, body);
+                } catch (AddressException e) {
+                    e.printStackTrace();
+                }
+            });
         }
+
+        // Shutdown the executor after tasks are completed
+        executor.shutdown();
     }
 
     // Method to notify ticket update
     public void notifyTicketUpdate() {
         String subject = "Ticket Updated: ID " + this.ticket.getId();
-        String body = "The ticket with ID " + this.ticket.getId() + " has been updated as " + this.ticket.getStatus() + ".";
+        String body = "The ticket with ID " + this.ticket.getId() + " has been updated to status: " + this.ticket.getStatus() + ".";
 
-        try {
-            sendEmail("nomenarkt16@gmail.com", subject, body);
-        } catch (AddressException e) {
-            e.printStackTrace();
+        // Create a thread pool to send emails in parallel
+        ExecutorService executor = Executors.newFixedThreadPool(mailsReceptor.size());
+
+        for (String email : mailsReceptor) {
+            executor.submit(() -> {
+                try {
+                    sendEmail(email, subject, body);
+                } catch (AddressException e) {
+                    e.printStackTrace();
+                }
+            });
         }
+
+        // Shutdown the executor after tasks are completed
+        executor.shutdown();
     }
 }

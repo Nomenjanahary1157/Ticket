@@ -74,7 +74,23 @@ public class EmailNotifier {
     // Method to notify ticket creation
     public void notifyTicketCreation() {
         String subject = "New Ticket Created: ID " + this.ticket.getId();
-        String body = "A new ticket with ID " + this.ticket.getId() + " with title as " + this.ticket.getName() + " is Created.";
+        String body = "A new ticket with ID " + this.ticket.getId() + " with title as " + this.ticket.getName() + " has been Created by " + ticket.getClient().getUsername();
+        execute(subject, body);
+
+    }
+
+    // Method to notify ticket assignation
+    public void notifyTicketAssignation() {
+        String subject = "Ticket assigned: ID " + this.ticket.getId();
+        String body = "A new ticket with ID " + this.ticket.getId() + " with title as " + this.ticket.getName() + " is assigned to " + mailsReceptor.getFirst();
+        execute(subject, body);
+
+    }
+
+    // Method to notify ticket resolution
+    public void notifyTicketOnResolved() {
+        String subject = "Ticket resolved: ID " + this.ticket.getId();
+        String body = "The ticket with ID " + this.ticket.getId() + " with title as " + this.ticket.getName() + " is resolved.";
         execute(subject, body);
 
     }

@@ -2,6 +2,7 @@ package com.techlab.ticketservice.services;
 
 import com.techlab.ticketrepository.enums.Role;
 import com.techlab.ticketrepository.enums.TicketStatus;
+import com.techlab.ticketrepository.models.Client;
 import com.techlab.ticketrepository.models.Ticket;
 import com.techlab.ticketrepository.models.User;
 import com.techlab.ticketrepository.repositories.TicketRepository;
@@ -9,6 +10,7 @@ import com.techlab.ticketrepository.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -58,6 +60,13 @@ public class UserService {
         notifier.notifyTicketUpdate();
     }
 
+    public void notifyDevOnAssign(User user , Ticket ticket){
+        // Create an EmailNotifier instance
+        EmailNotifier notifier = new EmailNotifier(ticket, Collections.singletonList(user.getMail()));
+        notifier.notifyTicketAssignation();
+    }
+
+
     public Optional<User> findByName(String username) {
         return userRepository.findByUsername(username);
     }
@@ -92,6 +101,7 @@ public class UserService {
             user.setTickets(tickets);
             ticket.setStatus(TicketStatus.TO_DO);
             ticketRepository.save(ticket);
+            notifyDevOnAssign(user,ticket);
             // Persist the change in the database
             return userRepository.save(user);
         } else {

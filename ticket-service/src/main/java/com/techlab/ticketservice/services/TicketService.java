@@ -8,6 +8,7 @@ import com.techlab.ticketrepository.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -42,6 +43,9 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(id).orElse(null);
         if (ticket != null) {
             ticket.setStatus(TicketStatus.valueOf(newStatus));
+            if(newStatus.equals(String.valueOf(TicketStatus.RESOLVED))){
+                notifyClientOnResolved(ticket);
+            }
             return ticketRepository.save(ticket);
         }
         return null;
@@ -51,10 +55,9 @@ public class TicketService {
         return ticketRepository.findByStatus(status);
     }
 
-    public void addUserToTicket(Ticket ticket, User user) {
-        if (ticket != null && user != null) {
-            ticket.getUsers().add(user);
-            ticketRepository.save(ticket);
-        }
+    public void notifyClientOnResolved(Ticket ticket){
+        // Create an EmailNotifier instance
+        EmailNotifier notifier = new EmailNotifier(ticket, Collections.singletonList(ticket.getClient().getMail()));
+        notifier.notifyTicketOnResolved();
     }
 }

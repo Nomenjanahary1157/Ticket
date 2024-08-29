@@ -72,7 +72,7 @@ public class TicketController {
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('CP','BA','DEV')")
+    @PreAuthorize("hasAnyRole('CP','BA','DEV','CLI')")
     public ResponseEntity<?> updateStatus(@PathVariable Integer id, @RequestParam String status) {
         try {
             Ticket updatedTicket = ticketService.changeStatus(id, status);
